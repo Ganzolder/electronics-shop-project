@@ -31,8 +31,8 @@ class Item:
         """
         Применяет установленную скидку для конкретного товара.
         """
-        discount_price = self.quantity * self.price * self.__class__.pay_rate
-        return discount_price
+        self.price = self.price * self.__class__.pay_rate
+        return self.price
 
     def instance_registrator(self) -> None:
         return len(self.all)
