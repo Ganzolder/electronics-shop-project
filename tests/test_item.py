@@ -21,5 +21,18 @@ def test_calculate_total_price():
 
 #  testcase#4 testing count of instances
 def test_instance_registrator():
-    item = Item('iphone', 99000, 20)
     assert len(Item.all) != []
+
+#  testcase#5 testing setting
+def test_name_setter():
+    item = Item('iphone', 99000, 20)
+    item.name = 'samsung'
+    assert item.name == 'samsung'
+    item.name = 'RussianSuperSmartphone'
+    assert len(item.name) == 10
+
+#  testcase#6 testing csv parser
+def test_instantiate_from_csv():
+    Item.instantiate_from_csv()
+    assert Item.all[0].name == 'Смартфон'
+
