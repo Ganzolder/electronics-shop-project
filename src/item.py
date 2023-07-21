@@ -61,3 +61,8 @@ class Item:
     @staticmethod
     def string_to_number(num):
         return int(float(num))
+
+    def __add__(self, other):
+        if not isinstance(other, Item):
+            raise TypeError('Не является экземпляром класса или субкласса Item')
+        return self.quantity + other.quantity
