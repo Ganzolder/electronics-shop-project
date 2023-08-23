@@ -1,5 +1,26 @@
 import csv
 
+
+class emptyFileException(Exception):
+    def __init__(self):
+        self.message = 'No file found'
+
+
+class dmgdFileException(Exception):
+    def __init__(self):
+        self.message = 'Damaged file loaded'
+
+
+class InstantiateCSVError:
+    def __init__(self, file_open):
+        self.file_open = file_open
+        if (self.file_open) == 0:
+            raise emptyFileException
+        if Item.instantiate_from_csv() == KeyError:
+            raise dmgdFileException
+
+
+
 class Item:
     """
     Класс для представления товара в магазине.
@@ -43,7 +64,7 @@ class Item:
         total_price = int(self.quantity) * int(self.price)
         return total_price
 
-    def apply_discount(self) -> None:
+    def apply_discount(self):
         """
         Применяет установленную скидку для конкретного товара.
         """
@@ -52,7 +73,7 @@ class Item:
 
     @classmethod
     def instantiate_from_csv(cls):
-        with open('C:\python\electronics-shop-project\src\items.csv', newline='') as csvfile:
+        with open('C:\python\electronics-shop-project\src\items_dmgd2.csv', newline='') as csvfile:
             reader = list(csv.DictReader(csvfile))
             for row in reader:
                 item = Item(row['name'], row['price'], row['quantity'])
@@ -66,3 +87,14 @@ class Item:
         if not isinstance(other, Item):
             raise TypeError('Не является экземпляром класса или субкласса Item')
         return self.quantity + other.quantity
+
+try:
+    Item.instantiate_from_csv()
+except emptyFileException as ex:
+    print(ex.message)
+except dmgdFileException as ex:
+    print(ex.message)
+
+    #  item_1 = Item.all[0].quantity
+
+#  KeyError: 'name'

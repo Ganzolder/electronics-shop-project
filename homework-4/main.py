@@ -12,6 +12,6 @@ if __name__ == '__main__':
     item1 = Item("Смартфон", 10000, 20)
     assert item1 + phone1 == 25
     assert phone1 + phone1 == 10
-
+    print(len(item1.__dict__))
     phone1.number_of_sim = 0
     # ValueError: Количество физических SIM-карт должно быть целым числом больше нуля.
