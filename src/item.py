@@ -3,13 +3,13 @@ import os.path
 
 
 class EmptyFileException(Exception):
-    def __init__(self):
-        self.message = 'No file found'
+    def __init__(self, *args, **kwargs):
+        self.message = 'FileNotFoundError: Отсутствует файл item.csv'
 
 
 class DmgdFileException(Exception):
-    def __init__(self):
-        self.message = 'Damaged file loaded'
+    def __init__(self, *args, **kwargs):
+        self.message = 'InstantiateCSVError: Файл item.csv поврежден'
 
 
 class InstantiateCSVError:
@@ -22,7 +22,7 @@ class Item:
     """
     pay_rate = 1
     all = []
-    filepath = 'C:\python\electronics-shop-project\src\items_dmgd.csv'
+    filepath = 'C:\python\electronics-shop-project\src\items2.csv'
 
     def __init__(self, name: str, price: float, quantity: int) -> None:
         """
@@ -69,18 +69,25 @@ class Item:
 
     @classmethod
     def instantiate_from_csv(cls):
+        try:
+            if os.path.isfile(cls.filepath):
+                with open(cls.filepath, newline='') as csvfile:
+                    reader = list(csv.DictReader(csvfile))
+                    for row in reader:
+                        if len(row) == 3:
+                            item = Item(row['name'], row['price'], row['quantity'])
+                            Item.all.append(item)
+                        else:
+                            raise DmgdFileException
+            else:
+                raise EmptyFileException
 
-        if os.path.isfile(cls.filepath):
-            with open(cls.filepath, newline='') as csvfile:
-                reader = list(csv.DictReader(csvfile))
-                for row in reader:
-                    if len(row) == 3:
-                        item = Item(row['name'], row['price'], row['quantity'])
-                        Item.all.append(item)
-                    else:
-                        raise DmgdFileException
-        else:
-            raise EmptyFileException
+        except EmptyFileException as ex:
+            print(ex.message)
+        except DmgdFileException as ex:
+            print(ex.message)
+
+
 
     @staticmethod
     def string_to_number(num):
@@ -90,16 +97,3 @@ class Item:
         if not isinstance(other, Item):
             raise TypeError('Не является экземпляром класса или субкласса Item')
         return self.quantity + other.quantity
-
-try:
-    Item.instantiate_from_csv()
-except EmptyFileException as ex:
-    print(ex.message)
-except DmgdFileException as ex:
-    print(ex.message)
-
-
-
-    #  item_1 = Item.all[0].quantity
-
-#  KeyError: 'name'
