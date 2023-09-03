@@ -1,24 +1,19 @@
 import csv
+import os.path
 
 
-class emptyFileException(Exception):
+class EmptyFileException(Exception):
     def __init__(self):
         self.message = 'No file found'
 
 
-class dmgdFileException(Exception):
+class DmgdFileException(Exception):
     def __init__(self):
         self.message = 'Damaged file loaded'
 
 
 class InstantiateCSVError:
-    def __init__(self, file_open):
-        self.file_open = file_open
-        if (self.file_open) == 0:
-            raise emptyFileException
-        if Item.instantiate_from_csv() == KeyError:
-            raise dmgdFileException
-
+    pass
 
 
 class Item:
@@ -27,6 +22,7 @@ class Item:
     """
     pay_rate = 1
     all = []
+    filepath = 'C:\python\electronics-shop-project\src\items_dmgd.csv'
 
     def __init__(self, name: str, price: float, quantity: int) -> None:
         """
@@ -73,11 +69,18 @@ class Item:
 
     @classmethod
     def instantiate_from_csv(cls):
-        with open('C:\python\electronics-shop-project\src\items_dmgd2.csv', newline='') as csvfile:
-            reader = list(csv.DictReader(csvfile))
-            for row in reader:
-                item = Item(row['name'], row['price'], row['quantity'])
-                Item.all.append(item)
+
+        if os.path.isfile(cls.filepath):
+            with open(cls.filepath, newline='') as csvfile:
+                reader = list(csv.DictReader(csvfile))
+                for row in reader:
+                    if len(row) == 3:
+                        item = Item(row['name'], row['price'], row['quantity'])
+                        Item.all.append(item)
+                    else:
+                        raise DmgdFileException
+        else:
+            raise EmptyFileException
 
     @staticmethod
     def string_to_number(num):
@@ -90,10 +93,12 @@ class Item:
 
 try:
     Item.instantiate_from_csv()
-except emptyFileException as ex:
+except EmptyFileException as ex:
     print(ex.message)
-except dmgdFileException as ex:
+except DmgdFileException as ex:
     print(ex.message)
+
+
 
     #  item_1 = Item.all[0].quantity
 

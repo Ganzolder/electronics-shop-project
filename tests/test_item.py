@@ -1,5 +1,7 @@
 """Здесь надо написать тесты с использованием pytest для модуля item."""
-from src.item import Item
+import src.item
+import pytest
+from src.item import Item, DmgdFileException, EmptyFileException
 
 
 #  testcase#1 isinstance
@@ -40,4 +42,14 @@ def test_item_dunders():
     item1 = Item("Смартфон", 10000, 20)
     assert repr(item1) == "Item('Смартфон', 10000, 20)"
     assert str(item1) == 'Смартфон'
+
+def test_EmptyFileException():
+    Item.filepath = 'C:\python\electronics-shop-project\src\items2.csv'
+    with pytest.raises(EmptyFileException):
+        Item.instantiate_from_csv()
+
+def test_DmgdFileException():
+    Item.filepath = 'C:\python\electronics-shop-project\src\items_dmgd.csv'
+    with pytest.raises(DmgdFileException):
+        Item.instantiate_from_csv()
 
